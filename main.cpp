@@ -36,6 +36,7 @@ inline time_t gtc(void)
     return time_t(now.tv_sec * 1000.0 + now.tv_nsec / 1000000.0);
 }
 
+// called from script, cache the script function to RunFoo, and save interval
 static int run(Sqrat::Function& f, time_t interval)
 {
     RunFoo = new Sqrat::Function(f);
@@ -65,36 +66,36 @@ int main(int argc, char *argv[])
 
     sqrat_newapi(&SQ_PTRS);
     /**
-      add definitons for the script
+      add some new constants definitons for script
       */
     Sqrat::ConstTable(sq.theVM())
                         .Const("True", 1)
                         .Const("False", 0);
 
     /**
-      add global functions for the script
+      add a 'GlobalCall' function for script
       */
     Sqrat::RootTable(sq.theVM()).Functor("GlobalCall", &RunCtx::GlobalCall);
 
     /**
-      add classes and thir methods for the script
+      add a class and their methods for script
     */
     Sqrat::Class<Demo> cls(sq.theVM(), _SC("Demo"));
-    cls.Ctor<int>();
+    cls.Ctor<int>(); // custom constructor
     cls.Ctor();
     cls.Functor(_SC("Method"), &Demo::Method);
     cls.Functor(_SC("Method2"), &Demo::Method2);
     Sqrat::RootTable().Bind(_SC("Demo"), cls);
 
-    // global run
+    // get the script run function, so we can call it later on
     Sqrat::RootTable(sq.theVM()).Functor("run", &run);
 
 
     try{
-        MyScript scr = sq.compile_script(script.c_str());
-        scr.run_script();
+        MyScript scr = sq.compile_script(script.c_str()); // compile the script 'demo.js.txt'
+        scr.run_script();                                 // run it  
 
-        // main call from script
+        // get from script the main function
         Sqrat::Function f = Sqrat::RootTable().GetFunction(_SC("main"));
         if(!f.IsNull())
         {
@@ -102,23 +103,25 @@ int main(int argc, char *argv[])
             int                     rv;
 
             if(argc==2)
-                srv = f.Fcall<int>(0);
+                srv = f.Fcall<int>(0);          // call main with param 0
             else
-                srv = f.Fcall<int>(argv[2]);
-            if(srv.Get()==0)
+                srv = f.Fcall<int>(argv[2]);    // if we pass a second arg to main pass it to the script main
+                                                // take a look at main @ demo.js.txt, will call run into c++
+                                                // passing the loop function address and a time out, seee run() @ cpp
+            if(srv.Get()==0)                    // get return code from main
             {
                 throw (Sqrat::Exception("function setup must return True or False "));
             }
             else
                 rv = (*srv.Get());
 
-            if(rv == 1)
+            if(rv == 1)                         // if main returned 1, and run() saved the 'RunFoo' -> script::loop()
             {
                 time_t now,then=0;
                 while(rv)
                 {
                     now = ::gtc();
-                    if(now - then > Interval)
+                    if(now - then > Interval)   // call loop() into the script every 1000 ms
                     {
                         srv = RunFoo->Fcall<int>(now);
                         rv = (*srv.Get());
