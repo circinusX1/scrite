@@ -1,11 +1,11 @@
 
-demo := Demo ();
+demo := Demo ();   // class demo, the class in in C++
 
 function main(param)
 {
     print("SETUP CALLED");
 
-    demo.Method(4,"test");
+    demo.Method(4,"test");  // call class method for demo purposes.
 
     run(loop,1000);     // call back function
     return true;
