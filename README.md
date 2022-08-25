@@ -10,7 +10,13 @@
     * callback from C++ to script "loop"
     * calls an exported function from C++ by name "Method2"
     
-    
+#### make the sq libraries using the make files    
+#### build with QTcreator, or make a simple makefile with all cpp in the folder and link with pthred, dl and lsquirrel-x86_64-Linux
+#### run
+```
+   scrite ./demo.js.txt
+```
+
 
 
 
