@@ -87,15 +87,15 @@ int main(int argc, char *argv[])
     cls.Functor(_SC("Method2"), &Demo::Method2);
     Sqrat::RootTable().Bind(_SC("Demo"), cls);
 
-    // get the script run function, so we can call it later on
+    // get the script run function, so we can call from cpp as well using run.Fcall().
     Sqrat::RootTable(sq.theVM()).Functor("run", &run);
 
 
     try{
         MyScript scr = sq.compile_script(script.c_str()); // compile the script 'demo.js.txt'
-        scr.run_script();                                 // run it  
+        scr.run_script();                                 // run it. The script does nothing because we have a main function there  
 
-        // get from script the main function
+        // get from script the main function and call it now.
         Sqrat::Function f = Sqrat::RootTable().GetFunction(_SC("main"));
         if(!f.IsNull())
         {
@@ -105,8 +105,8 @@ int main(int argc, char *argv[])
             if(argc==2)
                 srv = f.Fcall<int>(0);          // call main with param 0
             else
-                srv = f.Fcall<int>(argv[2]);    // if we pass a second arg to main pass it to the script main
-                                                // take a look at main @ demo.js.txt, will call run into c++
+                srv = f.Fcall<int>(argv[2]);    // if we pass a second arg to main pass it to the script main, so user can make use of it
+                                                // take a look at main @ demo.js.txt, will call run @ C++
                                                 // passing the loop function address and a time out, seee run() @ cpp
             if(srv.Get()==0)                    // get return code from main
             {
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
             if(rv == 1)                         // if main returned 1, and run() saved the 'RunFoo' -> script::loop()
             {
                 time_t now,then=0;
-                while(rv)
+                while(rv)                       // as long loop returns 1, keep alive
                 {
                     now = ::gtc();
                     if(now - then > Interval)   // call loop() into the script every 1000 ms
