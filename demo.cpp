@@ -22,7 +22,7 @@ Demo::~Demo()
 {
     PDemo = nullptr;
     std::cout << "DEMO DTOR \n";
-    if(!_o.IsNull()) { _o.AddRef(); }
+    if(!_o.IsNull()) { _o.AddRef(); } // some bug I could not pinpoint in the sqrat, but now the app exits flawless
 }
 
 
