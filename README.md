@@ -15,6 +15,23 @@
 #### run
 ```
    scrite ./demo.js.txt
+   ./scrite ./demo.js.txt 
+
+CALLSTACK
+
+LOCALS
+Scrite ver: 0.0.1-Aug 25 2022
+DEMO CTOR 
+SETUP CALLED Demo::Method called 4 test 
+LOOP CALLED AT41803615
+ Demo::Method2 called 41803615 
+LOOP CALLED AT41804616
+ Demo::Method2 called 41804616 
+LOOP CALLED AT41805617
+ Demo::Method2 called 41805617 
+LOOP CALLED AT41806618
+ Demo::Method2 called 41806618 
+
 ```
 
 
