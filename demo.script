@@ -7,7 +7,11 @@ function main(param)
     print("main in script");
     GlobalCall("global call");
 
-    demo.Method(4,"test");  // call class method on script instance.
+    demo.Method(4,"test");  // call class method on script instance.....
+
+    call_script_object_method(demo);  // pass script instance to C++
+                                      // and let C++ to call on it
+
     run(loop,1000);     // call back function
     return true;
 }

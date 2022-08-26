@@ -45,7 +45,20 @@ static int run(Sqrat::Function& f, time_t interval)
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////
+// call from C++ the Method2 on the script instance.
+void call_script_object_method(Sqrat::Object sco)
+{
+    std::cout << __FUNCTION__ << "\n";
+    Sqrat::Object   o = sco.GetObject();
+    if(!o.IsNull())
+    {
+        Demo*     pp = o.Cast<Demo*>();
+        pp->Method2(100);
+    }
+}
 
+////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
     SqEnv               sq;                 // INIT SCRIPT ENV............
@@ -64,19 +77,19 @@ int main(int argc, char *argv[])
 
     sq.acquire();
 
-
     sqrat_newapi(&SQ_PTRS);
     /**
       add some new constants definitons for script.................
    */
     Sqrat::ConstTable(sq.theVM())
-                        .Const("True", 1)
-                        .Const("False", 0);
+            .Const("True", 1)
+            .Const("False", 0);
 
     /**
       export 'GlobalCall' function for script.....................
-      */
+    */
     Sqrat::RootTable(sq.theVM()).Functor("GlobalCall", &RunCtx::GlobalCall);
+    Sqrat::RootTable(sq.theVM()).Functor("call_script_object_method", &call_script_object_method);
 
     /**
       export class and their methods for script...................
@@ -108,8 +121,8 @@ int main(int argc, char *argv[])
                 srv = f.Fcall<int>(0);          // call main with param 0..........................
             else
                 srv = f.Fcall<int>(argv[2]);    // if we pass a second arg to main pass it to the script main, so user can make use of it
-                                                // take a look at main @ demo.js.txt, will call run @ C++
-                                                // passing the loop function address and a time out, seee run() @ cpp
+            // take a look at main @ demo.js.txt, will call run @ C++
+            // passing the loop function address and a time out, seee run() @ cpp
             if(srv.Get()==0)                    // get return code from main.......................
             {
                 throw (Sqrat::Exception("function setup must return True or False "));
