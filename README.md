@@ -1,14 +1,15 @@
 # scrite
 
 ## scripting engine template C++ / Squirrel + Sqrat.
-## Project for QTCreator
+## Project for QTCreator (or qmake . && make)
 
- * Demonstrate
-    * export global functions to script "main"
-    * export class and methods to script "Demo"
-    * instantiates the class Demo in script and calls methods
-    * callback from C++ to script "loop"
+ * Shows 
+    * export global or class static function to script 'GlobalFunction'
+    * export class and methods to script " class Demo"
+    * instantiates the class Demo in script and calls it's methods
+    * pass a function pointer from script to C++ and C++ calls that function 'loop'
     * calls an exported function from C++ by name "Method2"
+    * pass a C++ instance (a Demo class instance) to script and script calls it's methods.
     
 #### make the sq libraries using the make files    
 #### build with QTcreator, or make a simple makefile with all cpp in the folder and link with pthred, dl and lsquirrel-x86_64-Linux
