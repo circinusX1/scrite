@@ -36,6 +36,7 @@ inline time_t gtc(void)
     return time_t(now.tv_sec * 1000.0 + now.tv_nsec / 1000000.0);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
 // called from script, cache the script function to RunFoo, and save interval
 static int run(Sqrat::Function& f, time_t interval)
 {
@@ -46,8 +47,8 @@ static int run(Sqrat::Function& f, time_t interval)
 
 
 int main(int argc, char *argv[])
-{
-    SqEnv               sq;
+{   
+    SqEnv               sq;                 // INIT SCRIPT ENV............
     std::string         script;
     std::cout << "Scrite ver: 0.0.1-"<<__DATE__<<"\r\n";
 
@@ -66,19 +67,19 @@ int main(int argc, char *argv[])
 
     sqrat_newapi(&SQ_PTRS);
     /**
-      add some new constants definitons for script
-      */
+      add some new constants definitons for script.................
+   */
     Sqrat::ConstTable(sq.theVM())
                         .Const("True", 1)
                         .Const("False", 0);
 
     /**
-      add a 'GlobalCall' function for script
+      export 'GlobalCall' function for script.....................
       */
     Sqrat::RootTable(sq.theVM()).Functor("GlobalCall", &RunCtx::GlobalCall);
 
     /**
-      add a class and their methods for script
+      export class and their methods for script...................
     */
     Sqrat::Class<Demo> cls(sq.theVM(), _SC("Demo"));
     cls.Ctor<int>(); // custom constructor
@@ -86,16 +87,17 @@ int main(int argc, char *argv[])
     cls.Functor(_SC("Method"), &Demo::Method);
     cls.Functor(_SC("Method2"), &Demo::Method2);
     Sqrat::RootTable().Bind(_SC("Demo"), cls);
+    //............................................................
 
-    // get the script run function, so we can call from cpp as well using run.Fcall().
+    // get the script run function, so we can call from cpp as well using run.Fcall()......
     Sqrat::RootTable(sq.theVM()).Functor("run", &run);
 
 
     try{
-        MyScript scr = sq.compile_script(script.c_str()); // compile the script 'demo.js.txt'
+        MyScript scr = sq.compile_script(script.c_str()); // compile the script 'demo.js.txt'.................
         scr.run_script();                                 // run it. The script does nothing because we have a main function there  
 
-        // get from script the main function and call it now.
+        // get script's main function ..................................................
         Sqrat::Function f = Sqrat::RootTable().GetFunction(_SC("main"));
         if(!f.IsNull())
         {
@@ -103,17 +105,17 @@ int main(int argc, char *argv[])
             int                     rv;
 
             if(argc==2)
-                srv = f.Fcall<int>(0);          // call main with param 0
+                srv = f.Fcall<int>(0);          // call main with param 0..........................
             else
                 srv = f.Fcall<int>(argv[2]);    // if we pass a second arg to main pass it to the script main, so user can make use of it
                                                 // take a look at main @ demo.js.txt, will call run @ C++
                                                 // passing the loop function address and a time out, seee run() @ cpp
-            if(srv.Get()==0)                    // get return code from main
+            if(srv.Get()==0)                    // get return code from main.......................
             {
                 throw (Sqrat::Exception("function setup must return True or False "));
             }
             else
-                rv = (*srv.Get());
+                rv = (*srv.Get());              //......................  main return code.........
 
             if(rv == 1)                         // if main returned 1, and run() saved the 'RunFoo' -> script::loop()
             {
@@ -123,11 +125,11 @@ int main(int argc, char *argv[])
                     now = ::gtc();
                     if(now - then > Interval)   // call loop() into the script every 1000 ms
                     {
-                        srv = RunFoo->Fcall<int>(now);
+                        srv = RunFoo->Fcall<int>(now);  // call Fcall <- loop() @ script............
                         rv = (*srv.Get());
                         then = now;
 
-                        PDemo->call_from_cpp(now);
+                        PDemo->call_from_cpp(now);      // call a c++ method by name................
                     }
                 }
             }
