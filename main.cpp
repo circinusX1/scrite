@@ -47,7 +47,7 @@ static int run(Sqrat::Function& f, time_t interval)
 
 
 int main(int argc, char *argv[])
-{   
+{
     SqEnv               sq;                 // INIT SCRIPT ENV............
     std::string         script;
     std::cout << "Scrite ver: 0.0.1-"<<__DATE__<<"\r\n";
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
     try{
         MyScript scr = sq.compile_script(script.c_str()); // compile the script 'demo.js.txt'.................
-        scr.run_script();                                 // run it. The script does nothing because we have a main function there  
+        scr.run_script();                                 // run it. The script does nothing because we have a main function there
 
         // get script's main function ..................................................
         Sqrat::Function f = Sqrat::RootTable().GetFunction(_SC("main"));
@@ -133,6 +133,15 @@ int main(int argc, char *argv[])
                     }
                 }
             }
+
+            // let's pass the demo C++ instance to script...............
+            Sqrat::Function f2 = Sqrat::RootTable().GetFunction(_SC("take_obj"));
+            if(!f2.IsNull())
+            {
+                Demo  local_instance(2);                    // local instance........
+                f2.Fcall<int>(local_instance.object());     // pass it to script take_obj.....
+            }
+
         }
         else
         {
@@ -142,8 +151,7 @@ int main(int argc, char *argv[])
     }
     catch(Sqrat::Exception ex)
     {
-        std::cout << "Main: " << ex.Message();
-        ::msleep(5000);
+        std::cout <<  ex.Message() << " \n";
     }
     return 0;
 }

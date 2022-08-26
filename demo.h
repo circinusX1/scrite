@@ -6,7 +6,7 @@
 
 class Demo
 {
-    int _some;
+    int _some=0;
 public:
     Demo();
     Demo(int custom);
@@ -15,10 +15,11 @@ public:
     int Method(int k, const char* s);
     int Method2(int k);
     int call_from_cpp(time_t);
+    Sqrat::Object& object(){return _o;}
 
 private:
-    Sqrat::Object   _o;           // this is the object of this we return to script if we need the object 
-                                  // out of the scole (not the case because the Demo is global in the script)  
+    Sqrat::Object   _o;           // this is the object of this we return to script if we need the object
+                                  // out of the scole (not the case because the Demo is global in the script)
 };
 
 #endif // DEMO_H

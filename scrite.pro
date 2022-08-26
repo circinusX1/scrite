@@ -39,7 +39,7 @@ LIBS += -ldl -lpthread
 
 
 DISTFILES += \
-    demo.js.txt
+    demo.script
 
 target.path = ./bin
 INSTALLS += target

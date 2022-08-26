@@ -1,0 +1,31 @@
+
+demo := Demo ();   // class demo, the class in in C++
+
+////////////////////////////////////////////////////////////////
+function main(param)
+{
+    print("main in script");
+    GlobalCall("global call");
+
+    demo.Method(4,"test");  // call class method on script instance.
+    run(loop,1000);     // call back function
+    return true;
+}
+
+////////////////////////////////////////////////////////////////
+var j=5;
+// will runn 3 loops
+function loop(msecs)
+{
+    print("LOOP CALLED AT " + msecs +" - "+ j +"\n");
+    return j--;
+}
+
+//////////////////////////////////////////////////////////////////
+// receives the C++ instance
+function take_obj(o)
+{
+    print("take_obj called\n");
+    o.Method(3, "called from script");  ///..........call method on c++ instance.
+    return 0;           // a sqrat thing to return something !!!
+}
