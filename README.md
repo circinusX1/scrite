@@ -42,8 +42,19 @@ take_obj called
  Demo::Method called 3 called from script some=2 0x7ffdc93fa860
 DEMO DTOR 0x7ffdc93fa860
 DEMO DTOR 0x56152601a060
+```
 
-
+Object menthod test
+```            
+            Sqrat::Object   ps =  script_object;
+            Scr_Func        func;
+            std::string     fname = "a_script_function"
+            Sqrat::Function::getFoo(main_impl_t::_sq->theVM() , *ps, fname.c_str(), func);
+            if(func.IsNull())
+            {
+                return;
+            }
+            func.Release();
 ```
 
 
