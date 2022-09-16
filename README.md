@@ -49,7 +49,7 @@ Object menthod test
             Sqrat::Object   ps =  script_object;
             Scr_Func        func;
             std::string     fname = "a_script_function"
-            Sqrat::Function::getFoo(main_impl_t::_sq->theVM() , *ps, fname.c_str(), func);
+            Sqrat::Function::getFoo(theVM() , ps, fname.c_str(), func);
             if(func.IsNull())
             {
                 return;
